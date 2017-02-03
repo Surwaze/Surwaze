@@ -1,4 +1,4 @@
-package com.lmntrx.surwaze;
+package com.lmntrx.surwaze_sdk;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

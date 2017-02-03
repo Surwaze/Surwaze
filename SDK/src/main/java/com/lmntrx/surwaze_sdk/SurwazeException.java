@@ -1,4 +1,4 @@
-package com.lmntrx.surwaze;
+package com.lmntrx.surwaze_sdk;
 
 /***
  * Created by livin on 3/2/17.
