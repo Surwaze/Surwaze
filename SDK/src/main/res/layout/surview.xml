@@ -2,19 +2,43 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         >
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Sample"
-            android:id="@+id/sampleTV"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:id="@+id/questionTV"
+            android:layout_marginTop="64dp"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-    </RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/optionATV"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/optionBTV"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/optionCTV"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:id="@+id/optionDTV"/>
+
+    </LinearLayout>
 
 </merge>

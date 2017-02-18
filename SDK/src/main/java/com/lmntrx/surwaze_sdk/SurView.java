@@ -18,6 +18,10 @@ public class SurView extends RelativeLayout {
 
     TextView sampleTV;
 
+    public interface GetQuestionAPI{
+
+    }
+
     public interface Callback{
         void onError(SurwazeException exception);
         void onComplete();
@@ -52,7 +56,7 @@ public class SurView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        sampleTV = (TextView) findViewById(R.id.sampleTV);
+        sampleTV = (TextView) findViewById(R.id.questionTV);
     }
 
     public void setCallbacks(Callback callbacks){
