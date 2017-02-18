@@ -24,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(SurView surView) {
-                Toast.makeText(MainActivity.this, "Done", Toast.LENGTH_SHORT).show();
                 try {
                     surView.show();
                 } catch (SurwazeException e) {
