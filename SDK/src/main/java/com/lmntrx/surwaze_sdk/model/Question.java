@@ -8,6 +8,18 @@ import java.util.ArrayList;
 
 public class Question {
 
+    public String getQuestion() {
+        return question;
+    }
+
+    public ArrayList<Option> getOptions() {
+        return options;
+    }
+
+    public String getQuestionID() {
+        return questionID;
+    }
+
     private String question;
     private ArrayList<Option> options;
     private String questionID;
