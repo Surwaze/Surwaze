@@ -4,7 +4,7 @@ package com.lmntrx.surwaze_sdk;
  * Created by livin on 3/2/17.
  */
 
-class SurwazeException extends Exception{
+public class SurwazeException extends Exception{
 
     private String message;
 

@@ -15,27 +15,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/questionTV"
-            android:layout_marginTop="64dp"
+            android:text="Question"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="Option A"
             android:id="@+id/optionATV"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:text="Option B"
             android:id="@+id/optionBTV"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Option C"
             android:layout_marginTop="16dp"
             android:id="@+id/optionCTV"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Option D"
             android:layout_marginTop="16dp"
             android:id="@+id/optionDTV"/>
 

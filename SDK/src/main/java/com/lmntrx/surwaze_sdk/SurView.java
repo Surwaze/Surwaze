@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /***
  * Created by livin on 3/2/17.
@@ -100,7 +100,7 @@ public class SurView extends RelativeLayout {
     }
 
     public void load(){
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BASE_URL + "/questions/", null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BASE_URL + "questions/", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 if (response.length()>0){
@@ -113,8 +113,8 @@ public class SurView extends RelativeLayout {
                             JSONArray optionsArr = jsonObject.getJSONArray("options");
                             ArrayList<Option> options = new ArrayList<>();
                             for (int j = 0; j < optionsArr.length(); j++){
-                                String optionStr = optionsArr.getJSONObject(i).getString("option");
-                                String sl = optionsArr.getJSONObject(i).getString("sl");
+                                String optionStr = optionsArr.getJSONObject(j).getString("option");
+                                String sl = optionsArr.getJSONObject(j).getString("sl");
                                 options.add(new Option(sl,optionStr));
                             }
                             questions.add(new Question(questionStr,options,id));
@@ -129,7 +129,8 @@ public class SurView extends RelativeLayout {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                    callbacks.onError(new SurwazeException(error.getMessage()));
+                    callbacks.onError(new SurwazeException(error.getLocalizedMessage()));
+                error.printStackTrace();
             }
         }){
             @Override
@@ -154,7 +155,7 @@ public class SurView extends RelativeLayout {
 
     public void show() throws SurwazeException {
         try {
-            Question question = questions.get(0);
+            Question question = questions.get(questions.size()-1);
             questionTV.setText(question.getQuestion());
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
