@@ -2,6 +2,7 @@ package com.lmntrx.surwaze;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.lmntrx.surwaze_sdk.SurView;
@@ -36,5 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }).load();
+    }
+
+    public void showSurvey(View view) {
+        try {
+            surView.show();
+        } catch (SurwazeException e) {
+            e.printStackTrace();
+        }
     }
 }

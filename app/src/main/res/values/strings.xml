@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Surwaze</string>
+    <string name="show_survey">Show Survey</string>
 </resources>
