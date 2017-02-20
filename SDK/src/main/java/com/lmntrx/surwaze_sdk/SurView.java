@@ -4,7 +4,10 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +17,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.lmntrx.surwaze_sdk.model.Option;
 import com.lmntrx.surwaze_sdk.model.Question;
 
@@ -34,13 +38,17 @@ public class SurView extends RelativeLayout {
 
     private Context context;
 
+    private int showCount = 0;
+
     List<Question> questions;
 
-    private TextView questionTV,
-            optionATV,
+    private TextView questionTV;
+    private RadioButton optionATV,
             optionBTV,
             optionCTV,
             optionDTV;
+
+    String currentID;
 
     private String BASE_URL = "http://api.surwaze.com/";
 
@@ -83,10 +91,57 @@ public class SurView extends RelativeLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         questionTV = (TextView) findViewById(R.id.questionTV);
-        optionATV = (TextView) findViewById(R.id.optionATV);
-        optionBTV = (TextView) findViewById(R.id.optionBTV);
-        optionCTV = (TextView) findViewById(R.id.optionCTV);
-        optionDTV = (TextView) findViewById(R.id.optionDTV);
+        optionATV = (RadioButton) findViewById(R.id.optionATV);
+        optionBTV = (RadioButton) findViewById(R.id.optionBTV);
+        optionCTV = (RadioButton) findViewById(R.id.optionCTV);
+        optionDTV = (RadioButton) findViewById(R.id.optionDTV);
+        OnClickListener optionClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SurView.this.setVisibility(GONE);
+                String sl;
+                if (v.getId() == R.id.optionATV){
+                    sl = "a";
+                }else if (v.getId() == R.id.optionBTV){
+                    sl = "b";
+                }else if (v.getId() == R.id.optionCTV){
+                    sl = "c";
+                }else if (v.getId() == R.id.optionDTV){
+                    sl = "d";
+                }else {
+                    sl = "INVALID";
+                }
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("SurwazeOption","Recorded");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("x-access-token",context.getString(R.string.token));
+                        return headers;
+
+                    }
+                };
+                request.setRetryPolicy(new DefaultRetryPolicy(
+                        10 * 1000,//timeout
+                        2,//retries
+                        2));//back off multiplier
+                Surwaze.getInstance(context).addToRequestQueue(request);
+            }
+        };
+        optionATV.setOnClickListener(optionClickListener);
+        optionBTV.setOnClickListener(optionClickListener);
+        optionCTV.setOnClickListener(optionClickListener);
+        optionDTV.setOnClickListener(optionClickListener);
     }
 
 
@@ -148,14 +203,21 @@ public class SurView extends RelativeLayout {
                 2));//back off multiplier
 
         // Access the RequestQueue through your singleton class.
+        request.setShouldCache(false);
         Surwaze.getInstance(context).addToRequestQueue(request);
 
     }
 
     public void show() throws SurwazeException {
         try {
-            Question question = questions.get(questions.size()-1);
+            Question question = questions.get(questions.size()-++showCount);
+            Log.d("Question",question.getQuestion());
+            currentID = question.getQuestionID();
             questionTV.setText(question.getQuestion());
+            optionATV.setChecked(false);
+            optionBTV.setChecked(false);
+            optionCTV.setChecked(false);
+            optionDTV.setChecked(false);
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
                 switch (option.getOptionSL()){
@@ -176,6 +238,8 @@ public class SurView extends RelativeLayout {
             this.setVisibility(VISIBLE);
         }catch (NullPointerException e){
             throw new SurwazeException("Not Ready Yet");
+        }catch (ArrayIndexOutOfBoundsException exception){
+            throw new SurwazeException("No more questions to show");
         }
 
     }

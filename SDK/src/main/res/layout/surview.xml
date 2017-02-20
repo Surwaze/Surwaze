@@ -18,25 +18,25 @@
             android:text="Question"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-        <TextView
+        <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Option A"
             android:id="@+id/optionATV"/>
-        <TextView
+        <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Option B"
             android:id="@+id/optionBTV"/>
-        <TextView
+        <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option C"
             android:layout_marginTop="16dp"
             android:id="@+id/optionCTV"/>
-        <TextView
+        <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Option D"
