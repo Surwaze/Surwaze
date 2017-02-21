@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
 
+apply plugin: 'com.novoda.bintray-release'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -18,6 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+publish {
+    userOrg = 'lmntrx-tech'
+    groupId = 'com.lmntrx.surwaze_sdk'
+    repoName = 'Surwaze'
+    artifactId = 'Surwaze'
+    publishVersion = '0.0.1'
+    desc = 'Now Survey Everyone'
+    website = 'https://surwaze.com'
 }
 
 dependencies {
