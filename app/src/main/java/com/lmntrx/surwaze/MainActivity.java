@@ -16,7 +16,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         surView = (SurView) findViewById(R.id.surView);
+
         surView.setCallbacks(new SurView.Callback() {
             @Override
             public void onError(SurwazeException exception) {
@@ -37,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }).load();
+
     }
 
     public void showSurvey(View view) {
