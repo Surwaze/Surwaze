@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.lmntrx.surwaze.MainActivity">
 
-    <com.lmntrx.surwaze_sdk.SurView
+    <com.lmntrx.surwaze_sdk.SurUnits.SurView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/surView"/>
@@ -20,5 +20,12 @@
         android:layout_height="wrap_content"
         android:text="@string/show_survey"
         android:onClick="showSurvey"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="launchInterstitialSurveyActivity"
+        android:text="@string/test_interstitial_survey"/>
 
 </RelativeLayout>
