@@ -3,7 +3,9 @@ package com.lmntrx.surwaze_sdk.SurUnits;
 import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -50,12 +52,15 @@ public class Interstitial extends Dialog {
         optionCTV,
         optionDTV;
 
+    private ImageView skipButton;
+
     private String currentID;
 
     public interface Callback{
         void onError(SurwazeException exception);
-        void onComplete(Interstitial interstitial);
+        void onLoadComplete(Interstitial interstitial);
         void onSkipped();
+        void onAnswered();
     }
 
 
@@ -71,6 +76,16 @@ public class Interstitial extends Dialog {
         optionBTV = (TextView) findViewById(R.id.optionBTV);
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
+        skipButton = (ImageView) findViewById(R.id.skipButton);
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!answered){
+                    callbacks.onSkipped();
+                }
+                dismiss();
+            }
+        });
         setCancelable(false);
     }
 
@@ -103,7 +118,7 @@ public class Interstitial extends Dialog {
                             return;
                         }
                     }
-                    callbacks.onComplete(Interstitial.this);
+                    callbacks.onLoadComplete(Interstitial.this);
                 }
             }
         }, new Response.ErrorListener() {

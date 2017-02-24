@@ -24,13 +24,18 @@ public class InterstitialSurUnit extends AppCompatActivity {
             }
 
             @Override
-            public void onComplete(Interstitial interstitial) {
+            public void onLoadComplete(Interstitial interstitial) {
                 findViewById(R.id.showInterstitialButton).setEnabled(true);
             }
 
             @Override
             public void onSkipped() {
+                Toast.makeText(InterstitialSurUnit.this, "Skipped", Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onAnswered() {
+                Toast.makeText(InterstitialSurUnit.this, "Answered", Toast.LENGTH_SHORT).show();
             }
         }).load();
     }
