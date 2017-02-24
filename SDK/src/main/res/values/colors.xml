@@ -2,8 +2,10 @@
 <resources>
     <color name="colorPrimaryDarkInterstitial">#052737</color>
     <color name="colorQuestionBackground">#01579B</color>
-    <color name="colorOptionABackground">#01579B</color>
-    <color name="colorOptionBBackground">#01579B</color>
-    <color name="colorOptionCnBackground">#01579B</color>
-    <color name="colorOptionDBackground">#01579B</color>
+    <color name="colorOptionABackground">#0288D1</color>
+    <color name="colorOptionBBackground">#03A9F4</color>
+    <color name="colorOptionCnBackground">#4FC3F7</color>
+    <color name="colorOptionDBackground">#81D4FA</color>
+    <color name="colorSliderNobe">#2962FF</color>
+    <color name="colorSlider">#E1F5FE</color>
 </resources>

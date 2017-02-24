@@ -32,6 +32,78 @@
                     android:textColor="@android:color/white"/>
         </LinearLayout>
 
-        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingRight="@dimen/defaultPadding"
+            android:paddingEnd="@dimen/defaultPadding"
+            android:paddingLeft="@dimen/defaultPadding"
+            android:paddingStart="@dimen/defaultPadding"
+            android:paddingBottom="@dimen/defaultPadding"
+            android:weightSum="2">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/colorQuestionBackground"
+                    android:layout_height="match_parent"
+                    android:id="@+id/questionTV"
+                    android:textSize="@dimen/textSizeQuestion"
+                    android:text="@string/question"
+                    android:textColor="@android:color/black"
+                    android:gravity="center"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:weightSum="4"
+                    android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:gravity="center"
+                            android:id="@+id/optionATV"
+                            android:textSize="@dimen/textSizeOptions"
+                            android:text="@string/option_a"
+                            android:textColor="@color/colorPrimaryDarkInterstitial"
+                            android:background="@color/colorOptionABackground"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:gravity="center"
+                            android:textSize="@dimen/textSizeOptions"
+                            android:id="@+id/optionBTV"
+                            android:text="@string/option_b"
+                            android:textColor="@color/colorPrimaryDarkInterstitial"
+                            android:background="@color/colorOptionBBackground"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:gravity="center"
+                            android:id="@+id/optionCTV"
+                            android:textSize="@dimen/textSizeOptions"
+                            android:text="@string/option_c"
+                            android:textColor="@color/colorPrimaryDarkInterstitial"
+                            android:background="@color/colorOptionCnBackground"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:gravity="center"
+                            android:id="@+id/optionDTV"
+                            android:textSize="@dimen/textSizeOptions"
+                            android:text="@string/option_d"
+                            android:textColor="@color/colorPrimaryDarkInterstitial"
+                            android:background="@color/colorOptionDBackground"
+                            android:layout_weight="1"/>
+                </LinearLayout>
+        </LinearLayout>
+
+
 
 </LinearLayout>
