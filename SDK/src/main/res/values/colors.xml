@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryDarkInterstitial">#052737</color>
+    <color name="colorQuestionBackground">#01579B</color>
+    <color name="colorOptionABackground">#01579B</color>
+    <color name="colorOptionBBackground">#01579B</color>
+    <color name="colorOptionCnBackground">#01579B</color>
+    <color name="colorOptionDBackground">#01579B</color>
+</resources>
