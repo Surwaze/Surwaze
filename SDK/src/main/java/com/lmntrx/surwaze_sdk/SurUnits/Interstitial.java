@@ -2,7 +2,10 @@ package com.lmntrx.surwaze_sdk.SurUnits;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.Window;
+import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -38,7 +41,16 @@ public class Interstitial extends Dialog {
 
     List<Question> questions;
 
-    String currentID;
+    private boolean answered = false;
+
+
+    private TextView questionTV,
+        optionATV,
+        optionBTV,
+        optionCTV,
+        optionDTV;
+
+    private String currentID;
 
     public interface Callback{
         void onError(SurwazeException exception);
@@ -47,13 +59,19 @@ public class Interstitial extends Dialog {
     }
 
 
-    Callback callbacks;
+    private Callback callbacks;
 
     public Interstitial(Context context) {
         super(context, android.R.style.Theme);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.interstitial);
         this.context = context;
+        questionTV = (TextView) findViewById(R.id.questionTV);
+        optionATV = (TextView) findViewById(R.id.optionATV);
+        optionBTV = (TextView) findViewById(R.id.optionBTV);
+        optionCTV = (TextView) findViewById(R.id.optionCTV);
+        optionDTV = (TextView) findViewById(R.id.optionDTV);
+        setCancelable(false);
     }
 
     public Interstitial setCallbacks(Callback callbacks){
@@ -119,6 +137,33 @@ public class Interstitial extends Dialog {
     @Override
     public void show(){
         super.show();
-
+        answered = false;
+        try {
+            Question question = questions.get(questions.size()-++showCount);
+            Log.d("Question",question.getQuestion());
+            currentID = question.getQuestionID();
+            questionTV.setText(question.getQuestion());
+            ArrayList<Option> options = question.getOptions();
+            for (Option option : options){
+                switch (option.getOptionSL()){
+                    case "a":
+                        optionATV.setText(option.getOption());
+                        break;
+                    case "b":
+                        optionBTV.setText(option.getOption());
+                        break;
+                    case "c":
+                        optionCTV.setText(option.getOption());
+                        break;
+                    case "d":
+                        optionDTV.setText(option.getOption());
+                        break;
+                }
+            }
+        }catch (NullPointerException e){
+            Log.d("SurwazeInterstitial","Still loading...");
+        }catch (ArrayIndexOutOfBoundsException exception){
+            Log.d("SurwazeInterstitial","No more questions to show");
+        }
     }
 }
