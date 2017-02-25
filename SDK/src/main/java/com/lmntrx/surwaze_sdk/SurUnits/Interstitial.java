@@ -21,6 +21,7 @@ import com.lmntrx.surwaze_sdk.Surwaze;
 import com.lmntrx.surwaze_sdk.SurwazeException;
 import com.lmntrx.surwaze_sdk.model.Option;
 import com.lmntrx.surwaze_sdk.model.Question;
+import com.lmntrx.surwaze_sdk.widget.OptionPicker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +55,8 @@ public class Interstitial extends Dialog {
 
     private ImageView skipButton;
 
+    private OptionPicker optionPicker;
+
     private String currentID;
 
     public interface Callback{
@@ -76,6 +79,7 @@ public class Interstitial extends Dialog {
         optionBTV = (TextView) findViewById(R.id.optionBTV);
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
+        optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
         skipButton = (ImageView) findViewById(R.id.skipButton);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
