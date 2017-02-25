@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -80,6 +82,21 @@ public class Interstitial extends Dialog {
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
         optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
+        optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(Interstitial.this.context, seekBar.getProgress() + "", Toast.LENGTH_SHORT).show();
+            }
+        });
         skipButton = (ImageView) findViewById(R.id.skipButton);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
