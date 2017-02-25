@@ -4,11 +4,13 @@
 
     <padding
         android:top="3dp"
-        android:left="20dp"
-        android:right="20dp"
+        android:left="8dp"
+        android:right="8dp"
         android:bottom="3dp"/>
 
     <solid android:color="#FFFFFF" />
+
+    <stroke android:width="8dp" android:color="@android:color/transparent"/>
 
     <corners
         android:bottomLeftRadius="12dp"

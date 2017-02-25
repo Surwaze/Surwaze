@@ -5,6 +5,6 @@
     <stroke android:color="@color/colorPrimaryDarkInterstitial" android:width="2dp"/>
     <solid android:color="@color/colorSliderNobe"/>
     <size
-        android:width="45dp"
-        android:height="45dp"/>
+        android:width="35dp"
+        android:height="35dp"/>
 </shape>
