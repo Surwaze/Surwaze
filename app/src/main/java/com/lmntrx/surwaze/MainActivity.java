@@ -1,11 +1,12 @@
 package com.lmntrx.surwaze;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.lmntrx.surwaze_sdk.SurView;
+import com.lmntrx.surwaze_sdk.SurUnits.SurView;
 import com.lmntrx.surwaze_sdk.SurwazeException;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,5 +49,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (SurwazeException e) {
             e.printStackTrace();
         }
+    }
+
+    public void launchInterstitialSurveyActivity(View view) {
+        startActivity(new Intent(this,InterstitialSurUnit.class));
     }
 }

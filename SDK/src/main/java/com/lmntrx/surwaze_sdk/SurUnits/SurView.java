@@ -1,4 +1,4 @@
-package com.lmntrx.surwaze_sdk;
+package com.lmntrx.surwaze_sdk.SurUnits;
 
 import android.content.Context;
 import android.os.Build;
@@ -18,6 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.lmntrx.surwaze_sdk.Constants;
+import com.lmntrx.surwaze_sdk.R;
+import com.lmntrx.surwaze_sdk.Surwaze;
+import com.lmntrx.surwaze_sdk.SurwazeException;
 import com.lmntrx.surwaze_sdk.model.Option;
 import com.lmntrx.surwaze_sdk.model.Question;
 
@@ -49,8 +53,6 @@ public class SurView extends RelativeLayout {
             optionDTV;
 
     String currentID;
-
-    private String BASE_URL = "http://api.surwaze.com/";
 
     public interface Callback{
         void onError(SurwazeException exception);
@@ -90,6 +92,7 @@ public class SurView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        setVisibility(GONE);
         questionTV = (TextView) findViewById(R.id.questionTV);
         optionATV = (RadioButton) findViewById(R.id.optionATV);
         optionBTV = (RadioButton) findViewById(R.id.optionBTV);
@@ -111,7 +114,7 @@ public class SurView extends RelativeLayout {
                 }else {
                     sl = "INVALID";
                 }
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("SurwazeOption","Recorded");
@@ -154,7 +157,7 @@ public class SurView extends RelativeLayout {
     }
 
     public void load(){
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, BASE_URL + "questions/", null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, Constants.API_BASE_URL, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 if (response.length()>0){

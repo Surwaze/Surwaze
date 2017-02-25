@@ -14,7 +14,7 @@ import com.android.volley.toolbox.Volley;
  * Created by livin on 2/2/17.
  */
 
-class Surwaze {
+public class Surwaze {
 
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
