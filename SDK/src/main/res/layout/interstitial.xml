@@ -113,13 +113,11 @@
                             android:progressDrawable="@drawable/option_picker_bg"
                             android:visibility="visible"
                             android:id="@+id/optionPicker"
-                            android:paddingRight="16dp"
-                            android:paddingLeft="16dp"
-                            android:layout_marginTop="16dp"
-                            android:layout_marginBottom="16dp"
+                            android:paddingRight="8dp"
+                            android:paddingLeft="8dp"
                             android:thumb="@drawable/circular_thumb"
-                            android:layout_marginEnd="10dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginRight="16dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
                 </RelativeLayout>
