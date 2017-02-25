@@ -13,6 +13,10 @@ import android.widget.SeekBar;
  */
 
 public class OptionPicker extends SeekBar {
+
+
+    private OnSeekBarChangeListener myListener;
+
     public OptionPicker(Context context) {
         super(context);
     }
@@ -40,6 +44,11 @@ public class OptionPicker extends SeekBar {
         setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
     }
 
+    @Override
+    public void setOnSeekBarChangeListener(OnSeekBarChangeListener mListener){
+        this.myListener = mListener;
+    }
+
     protected void onDraw(Canvas c) {
         c.rotate(-90);
         c.translate(-getHeight(), 0);
@@ -55,10 +64,16 @@ public class OptionPicker extends SeekBar {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                if(myListener!=null)
+                    myListener.onStartTrackingTouch(this);
+                break;
             case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_UP:
                 setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
                 onSizeChanged(getWidth(), getHeight(), 0, 0);
+                myListener.onProgressChanged(this, getMax() - (int) (getMax() * event.getY() / getHeight()), true);
+                break;
+            case MotionEvent.ACTION_UP:
+                myListener.onStopTrackingTouch(this);
                 break;
 
             case MotionEvent.ACTION_CANCEL:
@@ -66,4 +81,41 @@ public class OptionPicker extends SeekBar {
         }
         return true;
     }
+
+    /*protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(h, w, oldh, oldw);
+    }
+
+
+    @Override
+    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(heightMeasureSpec, widthMeasureSpec);
+        setMeasuredDimension(getMeasuredHeight(), getMeasuredWidth());
+    }
+
+
+    protected void onDraw(Canvas c) {
+        c.rotate(-90);
+        c.translate(-getHeight(), 0);
+        super.onDraw(c);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (!isEnabled()) {
+            return false;
+        }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+                //setProgress(getMax() - (int) (getMax() * event.getY() / getHeight()));
+                setProgress(getMax() - (int) (getMax() *(event.getY() - getPaddingRight()) / (getHeight() - getPaddingRight() - getPaddingLeft())));
+                onSizeChanged(getWidth(), getHeight(), 0, 0);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+        return true;
+    }*/
 }

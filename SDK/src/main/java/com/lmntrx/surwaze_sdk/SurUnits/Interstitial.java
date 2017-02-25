@@ -3,6 +3,7 @@ package com.lmntrx.surwaze_sdk.SurUnits;
 import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.lmntrx.surwaze_sdk.Constants;
 import com.lmntrx.surwaze_sdk.R;
 import com.lmntrx.surwaze_sdk.Surwaze;
@@ -94,7 +96,42 @@ public class Interstitial extends Dialog {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(Interstitial.this.context, seekBar.getProgress() + "", Toast.LENGTH_SHORT).show();
+                int progress = seekBar.getProgress();
+                dismiss();
+                callbacks.onAnswered();
+                String sl;
+                if (progress > 80){
+                    sl = "a";
+                }else if (progress > 50){
+                    sl = "b";
+                }else if (progress > 20){
+                    sl = "c";
+                }else {
+                    sl = "d";
+                }
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("SurwazeOption","Recorded");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
+                        return headers;
+                    }
+                };
+                request.setRetryPolicy(new DefaultRetryPolicy(
+                        10 * 1000,//timeout
+                        2,//retries
+                        2));//back off multiplier
+                Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
             }
         });
         skipButton = (ImageView) findViewById(R.id.skipButton);
@@ -200,6 +237,7 @@ public class Interstitial extends Dialog {
             Log.d("SurwazeInterstitial","Still loading...");
         }catch (ArrayIndexOutOfBoundsException exception){
             Log.d("SurwazeInterstitial","No more questions to show");
+            dismiss();
         }
     }
 }
