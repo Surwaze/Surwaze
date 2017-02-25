@@ -1,11 +1,22 @@
 package com.lmntrx.surwaze_sdk.SurUnits;
 
+import android.animation.Animator;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.Window;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
@@ -26,6 +37,7 @@ import com.lmntrx.surwaze_sdk.SurwazeException;
 import com.lmntrx.surwaze_sdk.model.Option;
 import com.lmntrx.surwaze_sdk.model.Question;
 import com.lmntrx.surwaze_sdk.widget.OptionPicker;
+import com.lmntrx.surwaze_sdk.widget.TypeWriter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +47,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /***
  * Created by livin on 25/2/17.
@@ -51,13 +65,16 @@ public class Interstitial extends Dialog {
     private boolean answered = false;
 
 
-    private TextView questionTV,
-        optionATV,
+    private TextView optionATV,
         optionBTV,
         optionCTV,
         optionDTV;
 
-    private ImageView skipButton;
+    private TypeWriter questionTV;
+
+    private View optionsParentLayout;
+
+    private ImageView skipButton, circleLoader;
 
     private OptionPicker optionPicker;
 
@@ -78,11 +95,25 @@ public class Interstitial extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.interstitial);
         this.context = context;
-        questionTV = (TextView) findViewById(R.id.questionTV);
+        questionTV = (TypeWriter) findViewById(R.id.questionTV);
         optionATV = (TextView) findViewById(R.id.optionATV);
         optionBTV = (TextView) findViewById(R.id.optionBTV);
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
+        circleLoader = (ImageView) findViewById(R.id.circleLoader);
+        optionsParentLayout = findViewById(R.id.optionsParentLayout);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                Interstitial.this.context.unregisterReceiver(revealOptionBR);
+            }
+        });
+        setOnCancelListener(new OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Interstitial.this.context.unregisterReceiver(revealOptionBR);
+            }
+        });
         optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
         optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -146,6 +177,32 @@ public class Interstitial extends Dialog {
         });
         setCancelable(false);
     }
+
+    private void startCircleLoaderBlink() {
+        final Animation blink = new AlphaAnimation(1, 0);
+        blink.setDuration(500);
+        blink.setInterpolator(new LinearInterpolator());
+        blink.setRepeatCount(Animation.INFINITE);
+        blink.setRepeatMode(Animation.REVERSE);
+        circleLoader.startAnimation(blink);
+    }
+
+    private BroadcastReceiver revealOptionBR = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int cx = optionsParentLayout.getWidth() / 2;
+            int cy = optionsParentLayout.getHeight() / 2;
+            float finalRadius = (float) Math.hypot(cx, cy);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                Animator anim = ViewAnimationUtils.createCircularReveal(optionsParentLayout, cx, cy, 0, finalRadius);
+                optionsParentLayout.setVisibility(View.VISIBLE);
+                anim.start();
+                optionPicker.setEnabled(true);
+            }else {
+
+            }
+        }
+    };
 
     public Interstitial setCallbacks(Callback callbacks){
         this.callbacks = callbacks;
@@ -211,11 +268,22 @@ public class Interstitial extends Dialog {
     public void show(){
         super.show();
         answered = false;
+        startCircleLoaderBlink();
+        optionPicker.setEnabled(false);
+        context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + "REVEAL_OPTIONS"));
+        optionsParentLayout.setVisibility(View.INVISIBLE);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Interstitial.this.context.sendBroadcast(new Intent(Interstitial.this.context.getPackageName() + "REVEAL_OPTIONS"));
+            }
+        },1500);
         try {
             Question question = questions.get(questions.size()-++showCount);
             Log.d("Question",question.getQuestion());
             currentID = question.getQuestionID();
-            questionTV.setText(question.getQuestion());
+            questionTV.setCharacterDelay(50);
+            questionTV.animateText(question.getQuestion());
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
                 switch (option.getOptionSL()){
