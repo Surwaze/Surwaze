@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -110,6 +111,34 @@ public class Interstitial extends Dialog {
         circleLoader = (ImageView) findViewById(R.id.circleLoader);
         handGesture = (ImageView) findViewById(R.id.handGesture);
         optionsParentLayout = findViewById(R.id.optionsParentLayout);
+        optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
+        ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
+        View.OnClickListener optionClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                if (id == R.id.optionATV){
+                    hitOption("a");
+                }else if (id == R.id.optionBTV){
+                    hitOption("b");
+                }else if (id == R.id.optionCTV){
+                    hitOption("c");
+                }else if (id == R.id.optionDTV){
+                    hitOption("d");
+                }
+                if (shouldVibrate){
+                    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                    if (vibrator.hasVibrator()){
+                        vibrator.vibrate(Constants.HAPTIC_FEEDBACK_VIBRATION_DURATION);
+                    }
+                }
+                dismiss();
+            }
+        };
+        optionATV.setOnClickListener(optionClickListener);
+        optionBTV.setOnClickListener(optionClickListener);
+        optionCTV.setOnClickListener(optionClickListener);
+        optionDTV.setOnClickListener(optionClickListener);
         FontManager.setFontToChildrenOfContainer(this.context,(ViewGroup) findViewById(R.id.interstitial_root));
         setOnDismissListener(new OnDismissListener() {
             @Override
@@ -123,9 +152,10 @@ public class Interstitial extends Dialog {
             public void onCancel(DialogInterface dialog) {
                 Interstitial.this.context.unregisterReceiver(revealOptionBR);
                 Interstitial.this.context.unregisterReceiver(showHelpBR);
+                Interstitial.this.context.unregisterReceiver(answeredSurveyBR);
+                Interstitial.this.context.unregisterReceiver(errorReceivedBR);
             }
         });
-        optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
         optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -179,9 +209,8 @@ public class Interstitial extends Dialog {
                             vibrator.vibrate(Constants.HAPTIC_FEEDBACK_VIBRATION_DURATION);
                         }
                     }
-                    int progress = seekBar.getProgress();
                     dismiss();
-                    callbacks.onAnswered();
+                    int progress = seekBar.getProgress();
                     String sl;
                     if (progress > 80){
                         sl = "a";
@@ -192,33 +221,10 @@ public class Interstitial extends Dialog {
                     }else {
                         sl = "d";
                     }
-                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("SurwazeOption","Recorded");
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                        }
-                    }){
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            Map<String, String> headers = new HashMap<>();
-                            headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
-                            return headers;
-                        }
-                    };
-                    request.setRetryPolicy(new DefaultRetryPolicy(
-                            Constants.VOLLEY_REQUEST_TIMEOUT,
-                            Constants.VOLLEY_REQUEST_RETRIES,
-                            Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
-                    Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
+                    hitOption(sl);
                 }
             }
         });
-        ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -229,6 +235,45 @@ public class Interstitial extends Dialog {
             }
         });
         setCancelable(false);
+    }
+
+    private void hitOption(String sl) {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbacks.onError(new SurwazeException(error.getLocalizedMessage()));
+            }
+        }){
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                if (response.statusCode == 200){
+                    Interstitial.this.context.sendBroadcast(new Intent(
+                            Interstitial.this.context.getPackageName() + ".ANSWERED"
+                    ));
+                }else {
+                    Interstitial.this.context.sendBroadcast(new Intent(
+                            Interstitial.this.context.getPackageName() + ".ERROR"
+                    ));
+                }
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
+                return headers;
+            }
+        };
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                Constants.VOLLEY_REQUEST_TIMEOUT,
+                Constants.VOLLEY_REQUEST_RETRIES,
+                Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
+        Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
     }
 
     private void startCircleLoaderBlink() {
@@ -270,6 +315,20 @@ public class Interstitial extends Dialog {
             helperAnimation.setRepeatMode(Animation.REVERSE);
             handGesture.setVisibility(View.VISIBLE);
             handGesture.setAnimation(helperAnimation);
+        }
+    };
+
+    private BroadcastReceiver answeredSurveyBR = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            callbacks.onAnswered();
+        }
+    };
+
+    private BroadcastReceiver errorReceivedBR = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            callbacks.onError(new SurwazeException("Network or Server error"));
         }
     };
 
@@ -340,6 +399,12 @@ public class Interstitial extends Dialog {
         optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+
+        context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
+        context.registerReceiver(showHelpBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".SHOW_HELP"));
+        context.registerReceiver(answeredSurveyBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".ANSWERED"));
+        context.registerReceiver(errorReceivedBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".ERROR"));
+
         answered = false;
         handGesture.setVisibility(View.INVISIBLE);
         startCircleLoaderBlink();
