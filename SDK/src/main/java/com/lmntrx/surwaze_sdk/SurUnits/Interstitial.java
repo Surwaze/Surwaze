@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Vibrator;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -162,6 +163,7 @@ public class Interstitial extends Dialog {
                 if (!optionPicker.isSelectionLocked()){
                     helper.cancel();
                     handGesture.setVisibility(View.GONE);
+                    handGesture.setImageDrawable(new ColorDrawable(ContextCompat.getColor(context,android.R.color.transparent)));
                     if (helperAnimation!=null){
                         helperAnimation.cancel();
                     }
@@ -194,6 +196,7 @@ public class Interstitial extends Dialog {
                 if (!optionPicker.isSelectionLocked()){
                     helper.cancel();
                     handGesture.setVisibility(View.INVISIBLE);
+                    handGesture.setImageDrawable(new ColorDrawable(ContextCompat.getColor(context,android.R.color.transparent)));
                     if (helperAnimation!=null){
                         helperAnimation.cancel();
                     }
@@ -314,6 +317,7 @@ public class Interstitial extends Dialog {
             helperAnimation.setRepeatCount(Animation.INFINITE);
             helperAnimation.setRepeatMode(Animation.REVERSE);
             handGesture.setVisibility(View.VISIBLE);
+            handGesture.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.hand_gesture));
             handGesture.setAnimation(helperAnimation);
         }
     };
