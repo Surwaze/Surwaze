@@ -7,21 +7,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.Window;
-import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -60,7 +57,7 @@ public class Interstitial extends Dialog {
 
     private int showCount = 0;
 
-    List<Question> questions;
+    private List<Question> questions;
 
     private boolean answered = false;
 
@@ -74,7 +71,8 @@ public class Interstitial extends Dialog {
 
     private View optionsParentLayout;
 
-    private ImageView skipButton, circleLoader;
+    private ImageView circleLoader;
+    private ImageView handGesture;
 
     private OptionPicker optionPicker;
 
@@ -90,6 +88,9 @@ public class Interstitial extends Dialog {
 
     private Callback callbacks;
 
+    private Timer helper;
+    private Animation helperAnimation;
+
     public Interstitial(Context context) {
         super(context, android.R.style.Theme);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -101,28 +102,36 @@ public class Interstitial extends Dialog {
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
         circleLoader = (ImageView) findViewById(R.id.circleLoader);
+        handGesture = (ImageView) findViewById(R.id.handGesture);
         optionsParentLayout = findViewById(R.id.optionsParentLayout);
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 Interstitial.this.context.unregisterReceiver(revealOptionBR);
+                Interstitial.this.context.unregisterReceiver(showHelpBR);
             }
         });
         setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 Interstitial.this.context.unregisterReceiver(revealOptionBR);
+                Interstitial.this.context.unregisterReceiver(showHelpBR);
             }
         });
         optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
         optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                helper.cancel();
+                handGesture.setVisibility(View.INVISIBLE);
+                if (helperAnimation!=null){
+                    helperAnimation.cancel();
+                }
             }
 
             @Override
@@ -159,13 +168,13 @@ public class Interstitial extends Dialog {
                     }
                 };
                 request.setRetryPolicy(new DefaultRetryPolicy(
-                        10 * 1000,//timeout
-                        2,//retries
-                        2));//back off multiplier
+                        Constants.VOLLEY_REQUEST_TIMEOUT,
+                        Constants.VOLLEY_REQUEST_RETRIES,
+                        Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
                 Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
             }
         });
-        skipButton = (ImageView) findViewById(R.id.skipButton);
+        ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
         skipButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,7 +189,7 @@ public class Interstitial extends Dialog {
 
     private void startCircleLoaderBlink() {
         final Animation blink = new AlphaAnimation(1, 0);
-        blink.setDuration(500);
+        blink.setDuration(Constants.CIRCULAR_BLINK_ANIMATION_DURATION);
         blink.setInterpolator(new LinearInterpolator());
         blink.setRepeatCount(Animation.INFINITE);
         blink.setRepeatMode(Animation.REVERSE);
@@ -190,17 +199,33 @@ public class Interstitial extends Dialog {
     private BroadcastReceiver revealOptionBR = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            int cx = optionsParentLayout.getWidth() / 2;
-            int cy = optionsParentLayout.getHeight() / 2;
-            float finalRadius = (float) Math.hypot(cx, cy);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                int cx = optionsParentLayout.getWidth() / 2;
+                int cy = optionsParentLayout.getHeight() / 2;
+                float finalRadius = (float) Math.hypot(cx, cy);
                 Animator anim = ViewAnimationUtils.createCircularReveal(optionsParentLayout, cx, cy, 0, finalRadius);
                 optionsParentLayout.setVisibility(View.VISIBLE);
                 anim.start();
-                optionPicker.setEnabled(true);
             }else {
-
+                Animation fadeIn = new AlphaAnimation(0,1);
+                fadeIn.setDuration(Constants.FADE_IN_ANIMATION_DURATION);
+                optionsParentLayout.setVisibility(View.VISIBLE);
+                fadeIn.start();
             }
+            optionPicker.setEnabled(true);
+        }
+    };
+
+    private BroadcastReceiver showHelpBR = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            helperAnimation = new TranslateAnimation(0,0,-200,200);
+            helperAnimation.setDuration(Constants.HELPER_HAND_GESTURE_ANIMATION_DURATION);
+            helperAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+            helperAnimation.setRepeatCount(Animation.INFINITE);
+            helperAnimation.setRepeatMode(Animation.REVERSE);
+            handGesture.setVisibility(View.VISIBLE);
+            handGesture.setAnimation(helperAnimation);
         }
     };
 
@@ -268,21 +293,31 @@ public class Interstitial extends Dialog {
     public void show(){
         super.show();
         answered = false;
+        handGesture.setVisibility(View.INVISIBLE);
         startCircleLoaderBlink();
         optionPicker.setEnabled(false);
-        context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + "REVEAL_OPTIONS"));
+        optionPicker.setProgress(50);
+        context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
+        context.registerReceiver(showHelpBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".SHOW_HELP"));
         optionsParentLayout.setVisibility(View.INVISIBLE);
+        helper = new Timer();
+        helper.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Interstitial.this.context.sendBroadcast(new Intent(Interstitial.this.context.getPackageName() + ".SHOW_HELP"));
+            }
+        },Constants.HELP_TIMER_DURATION);
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Interstitial.this.context.sendBroadcast(new Intent(Interstitial.this.context.getPackageName() + "REVEAL_OPTIONS"));
+                Interstitial.this.context.sendBroadcast(new Intent(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
             }
-        },1500);
+        },Constants.REVEAL_OPTIONS_TIMER_DURATION);
         try {
             Question question = questions.get(questions.size()-++showCount);
             Log.d("Question",question.getQuestion());
             currentID = question.getQuestionID();
-            questionTV.setCharacterDelay(50);
+            questionTV.setCharacterDelay(Constants.TYPE_WRITER_SPEED);
             questionTV.animateText(question.getQuestion());
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
