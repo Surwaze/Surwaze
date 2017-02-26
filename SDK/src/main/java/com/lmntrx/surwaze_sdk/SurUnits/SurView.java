@@ -1,8 +1,6 @@
 package com.lmntrx.surwaze_sdk.SurUnits;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -57,33 +55,26 @@ public class SurView extends RelativeLayout {
     public interface Callback{
         void onError(SurwazeException exception);
         void onComplete(SurView surView);
-        void onSkipped();
     }
 
     Callback callbacks;
 
     public SurView(Context context) {
         super(context);
-        init(context,null,0,0);
+        init(context);
     }
 
     public SurView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context,attrs,0,0);
+        init(context);
     }
 
     public SurView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context,attrs,defStyleAttr,0);
+        init(context);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public SurView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context,attrs,defStyleAttr,defStyleRes);
-    }
-
-    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes){
+    private void init(Context context){
         this.context = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.surview,this);

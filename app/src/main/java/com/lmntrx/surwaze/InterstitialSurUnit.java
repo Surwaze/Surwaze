@@ -41,6 +41,7 @@ public class InterstitialSurUnit extends AppCompatActivity {
     }
 
     public void showSurvey(View view) {
-        surView.show();
+        if (surView.canShow())
+            surView.show();
     }
 }

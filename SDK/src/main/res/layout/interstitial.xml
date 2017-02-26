@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/interstitial_root"
     android:background="@color/colorPrimaryDarkInterstitial">
 
         <LinearLayout
@@ -13,11 +14,12 @@
             android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/back"
                     android:layout_marginStart="16dp"
                     android:id="@+id/skipButton"
+                    android:contentDescription="@string/skip_survey_button"
                     android:layout_marginLeft="16dp"
                     android:scaleType="centerInside"/>
 
@@ -56,10 +58,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/circle_loader"
+                            android:contentDescription="@string/circular_loader_before_revealing_options"
+                            android:id="@+id/circleLoader"/>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:weightSum="4"
+                            android:visibility="invisible"
+                            android:id="@+id/optionsParentLayout"
                             android:orientation="vertical">
                                 <TextView
                                     android:layout_width="match_parent"
@@ -69,7 +82,7 @@
                                     android:textSize="@dimen/textSizeOptions"
                                     android:text="@string/option_a"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionABackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
 
                                 <TextView
@@ -80,7 +93,7 @@
                                     android:id="@+id/optionBTV"
                                     android:text="@string/option_b"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionBBackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
 
                                 <TextView
@@ -102,9 +115,10 @@
                                     android:textSize="@dimen/textSizeOptions"
                                     android:text="@string/option_d"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionDBackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
                         </LinearLayout>
+
 
                         <com.lmntrx.surwaze_sdk.widget.OptionPicker
                             android:layout_width="wrap_content"
@@ -116,10 +130,23 @@
                             android:paddingRight="8dp"
                             android:paddingLeft="8dp"
                             android:thumb="@drawable/circular_thumb"
-                            android:layout_marginEnd="16dp"
-                            android:layout_marginRight="16dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginRight="20dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
+
+                        <ImageView
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/hand_gesture"
+                            android:scaleType="centerInside"
+                            android:paddingBottom="15dp"
+                            android:visibility="gone"
+                            android:contentDescription="@string/hand_gesture_animation"
+                            android:id="@+id/handGesture"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"/>
                 </RelativeLayout>
         </LinearLayout>
 

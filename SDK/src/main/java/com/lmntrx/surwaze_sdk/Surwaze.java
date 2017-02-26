@@ -19,10 +19,6 @@ public class Surwaze {
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
 
-    public Context getContext() {
-        return context;
-    }
-
     private Context context;
 
     private Surwaze(Context context){
@@ -57,7 +53,7 @@ public class Surwaze {
         return surwaze;
     }
 
-    public RequestQueue getRequestQueue() {
+    private RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
             // getApplicationContext() is key, it keeps you from leaking the
             // Activity or BroadcastReceiver if someone passes one in.
@@ -70,6 +66,7 @@ public class Surwaze {
         getRequestQueue().add(req);
     }
 
+    @SuppressWarnings("unused")
     public ImageLoader getImageLoader() {
         return mImageLoader;
     }

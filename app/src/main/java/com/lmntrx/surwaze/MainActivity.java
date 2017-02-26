@@ -34,11 +34,6 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
-
-            @Override
-            public void onSkipped() {
-
-            }
         }).load();
 
     }
