@@ -15,31 +15,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/questionTV"
-            android:text="Question"
+            android:text="@string/question"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Option A"
+            android:text="@string/option_a"
             android:id="@+id/optionATV"/>
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Option B"
+            android:text="@string/option_b"
             android:id="@+id/optionBTV"/>
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Option C"
+            android:text="@string/option_c"
             android:layout_marginTop="16dp"
             android:id="@+id/optionCTV"/>
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Option D"
+            android:text="@string/option_d"
             android:layout_marginTop="16dp"
             android:id="@+id/optionDTV"/>
 

@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Vibrator;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -64,7 +66,6 @@ public class Interstitial extends Dialog {
 
     private boolean answered = false;
 
-
     private TextView optionATV,
         optionBTV,
         optionCTV,
@@ -81,6 +82,8 @@ public class Interstitial extends Dialog {
 
     private String currentID;
 
+    private Boolean shouldVibrate = true;
+
     public interface Callback{
         void onError(SurwazeException exception);
         void onLoadComplete(Interstitial interstitial);
@@ -94,7 +97,7 @@ public class Interstitial extends Dialog {
     private Timer helper;
     private Animation helperAnimation;
 
-    public Interstitial(Context context) {
+    public Interstitial(final Context context) {
         super(context, android.R.style.Theme);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.interstitial);
@@ -126,56 +129,93 @@ public class Interstitial extends Dialog {
         optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                if (!optionPicker.isSelectionLocked()){
+                    helper.cancel();
+                    handGesture.setVisibility(View.GONE);
+                    if (helperAnimation!=null){
+                        helperAnimation.cancel();
+                    }
+                    if (progress > 80){
+                        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionBBackground));
+                        optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                    }else if (progress > 50){
+                        optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionBBackground));
+                        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                    }else if (progress > 20){
+                        optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionBBackground));
+                        optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                    }else {
+                        optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionBBackground));
+                        optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+                    }
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-                helper.cancel();
-                handGesture.setVisibility(View.INVISIBLE);
-                if (helperAnimation!=null){
-                    helperAnimation.cancel();
+                if (!optionPicker.isSelectionLocked()){
+                    helper.cancel();
+                    handGesture.setVisibility(View.INVISIBLE);
+                    if (helperAnimation!=null){
+                        helperAnimation.cancel();
+                    }
                 }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                int progress = seekBar.getProgress();
-                dismiss();
-                callbacks.onAnswered();
-                String sl;
-                if (progress > 80){
-                    sl = "a";
-                }else if (progress > 50){
-                    sl = "b";
-                }else if (progress > 20){
-                    sl = "c";
-                }else {
-                    sl = "d";
-                }
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("SurwazeOption","Recorded");
+                if (!optionPicker.isSelectionLocked()){
+                    if (shouldVibrate){
+                        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+                        if (vibrator.hasVibrator()){
+                            vibrator.vibrate(Constants.HAPTIC_FEEDBACK_VIBRATION_DURATION);
+                        }
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                    int progress = seekBar.getProgress();
+                    dismiss();
+                    callbacks.onAnswered();
+                    String sl;
+                    if (progress > 80){
+                        sl = "a";
+                    }else if (progress > 50){
+                        sl = "b";
+                    }else if (progress > 20){
+                        sl = "c";
+                    }else {
+                        sl = "d";
+                    }
+                    JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("SurwazeOption","Recorded");
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                    }
-                }){
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
-                        return headers;
-                    }
-                };
-                request.setRetryPolicy(new DefaultRetryPolicy(
-                        Constants.VOLLEY_REQUEST_TIMEOUT,
-                        Constants.VOLLEY_REQUEST_RETRIES,
-                        Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
-                Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
+                        }
+                    }){
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> headers = new HashMap<>();
+                            headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
+                            return headers;
+                        }
+                    };
+                    request.setRetryPolicy(new DefaultRetryPolicy(
+                            Constants.VOLLEY_REQUEST_TIMEOUT,
+                            Constants.VOLLEY_REQUEST_RETRIES,
+                            Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
+                    Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
+                }
             }
         });
         ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
@@ -216,7 +256,7 @@ public class Interstitial extends Dialog {
                 optionsParentLayout.setVisibility(View.VISIBLE);
                 fadeIn.start();
             }
-            optionPicker.setEnabled(true);
+            optionPicker.toggleSelectionLock();
         }
     };
 
@@ -296,11 +336,15 @@ public class Interstitial extends Dialog {
     @Override
     public void show(){
         super.show();
+        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+        optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+        optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+        optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         answered = false;
         handGesture.setVisibility(View.INVISIBLE);
         startCircleLoaderBlink();
-        optionPicker.setEnabled(false);
-        optionPicker.setProgress(50);
+        optionPicker.toggleSelectionLock();
+        optionPicker.setProgress(90);
         context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
         context.registerReceiver(showHelpBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".SHOW_HELP"));
         optionsParentLayout.setVisibility(View.INVISIBLE);

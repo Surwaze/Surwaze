@@ -142,6 +142,7 @@
                             android:src="@drawable/hand_gesture"
                             android:scaleType="centerInside"
                             android:paddingBottom="15dp"
+                            android:visibility="gone"
                             android:contentDescription="@string/hand_gesture_animation"
                             android:id="@+id/handGesture"
                             android:layout_alignParentRight="true"

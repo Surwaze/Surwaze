@@ -13,16 +13,8 @@ public class Option {
         return optionSL;
     }
 
-    public void setOptionSL(String optionSL) {
-        this.optionSL = optionSL;
-    }
-
     public String getOption() {
         return option;
-    }
-
-    public void setOption(String option) {
-        this.option = option;
     }
 
     public Option(String optionSL, String option){
