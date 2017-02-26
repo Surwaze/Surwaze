@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-
-    <solid android:color="@color/colorQuestionBackground"/>
-    <size
-        android:width="80dp"
-        android:height="80dp"/>
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <item android:drawable="@drawable/loader_circle_3"
+        android:top="100px" android:bottom="100px"
+        android:left="100px" android:right="100px"/>
+    <item android:drawable="@drawable/loader_circle_2"
+        android:top="200px" android:bottom="200px"
+        android:left="200px" android:right="200px"/>
+    <item android:drawable="@drawable/loader_circle_1"
+        android:top="300px" android:bottom="300px"
+        android:left="300px" android:right="300px"/>
+    <item android:drawable="@drawable/loader_circle_0"
+        android:top="400px" android:bottom="400px"
+        android:left="400px" android:right="400px"/>
+</layer-list>

@@ -12,8 +12,8 @@ public class Constants {
     /* Animations and Timers */
     public static final long TYPE_WRITER_SPEED = 20; //ms
     public static final long HELP_TIMER_DURATION = 5000; //ms
-    public static final long REVEAL_OPTIONS_TIMER_DURATION = 1500; //ms
-    public static final long CIRCULAR_BLINK_ANIMATION_DURATION = 2000; //ms
+    public static final long REVEAL_OPTIONS_TIMER_DURATION = 2500; //ms
+    public static final long CIRCULAR_BLINK_ANIMATION_DURATION = 1000; //ms
     public static final long FADE_IN_ANIMATION_DURATION = 800; //ms
     public static final long HELPER_HAND_GESTURE_ANIMATION_DURATION = 1000; //ms
 

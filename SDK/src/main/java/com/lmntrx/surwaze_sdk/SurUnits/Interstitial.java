@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AlphaAnimation;
@@ -33,8 +34,8 @@ import com.lmntrx.surwaze_sdk.Surwaze;
 import com.lmntrx.surwaze_sdk.SurwazeException;
 import com.lmntrx.surwaze_sdk.model.Option;
 import com.lmntrx.surwaze_sdk.model.Question;
+import com.lmntrx.surwaze_sdk.utils.FontManager;
 import com.lmntrx.surwaze_sdk.widget.OptionPicker;
-import com.lmntrx.surwaze_sdk.widget.TypeWriter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,6 +56,8 @@ public class Interstitial extends Dialog {
 
     private Context context;
 
+    private Boolean canShow = true;
+
     private int showCount = 0;
 
     private List<Question> questions;
@@ -67,7 +70,7 @@ public class Interstitial extends Dialog {
         optionCTV,
         optionDTV;
 
-    private TypeWriter questionTV;
+    private TextView questionTV;
 
     private View optionsParentLayout;
 
@@ -96,7 +99,7 @@ public class Interstitial extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.interstitial);
         this.context = context;
-        questionTV = (TypeWriter) findViewById(R.id.questionTV);
+        questionTV = (TextView) findViewById(R.id.questionTV);
         optionATV = (TextView) findViewById(R.id.optionATV);
         optionBTV = (TextView) findViewById(R.id.optionBTV);
         optionCTV = (TextView) findViewById(R.id.optionCTV);
@@ -104,6 +107,7 @@ public class Interstitial extends Dialog {
         circleLoader = (ImageView) findViewById(R.id.circleLoader);
         handGesture = (ImageView) findViewById(R.id.handGesture);
         optionsParentLayout = findViewById(R.id.optionsParentLayout);
+        FontManager.setFontToChildrenOfContainer(this.context,(ViewGroup) findViewById(R.id.interstitial_root));
         setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -317,8 +321,7 @@ public class Interstitial extends Dialog {
             Question question = questions.get(questions.size()-++showCount);
             Log.d("Question",question.getQuestion());
             currentID = question.getQuestionID();
-            questionTV.setCharacterDelay(Constants.TYPE_WRITER_SPEED);
-            questionTV.animateText(question.getQuestion());
+            questionTV.setText(question.getQuestion());
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
                 switch (option.getOptionSL()){
@@ -336,11 +339,16 @@ public class Interstitial extends Dialog {
                         break;
                 }
             }
+            canShow = questions.size() > showCount;
         }catch (NullPointerException e){
             Log.d("SurwazeInterstitial","Still loading...");
         }catch (ArrayIndexOutOfBoundsException exception){
             Log.d("SurwazeInterstitial","No more questions to show");
             dismiss();
         }
+    }
+
+    public Boolean canShow(){
+        return canShow;
     }
 }

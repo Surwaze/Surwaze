@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:id="@+id/interstitial_root"
     android:background="@color/colorPrimaryDarkInterstitial">
 
         <LinearLayout
@@ -44,7 +44,7 @@
             android:paddingStart="@dimen/defaultPadding"
             android:paddingBottom="@dimen/defaultPadding"
             android:weightSum="2">
-                <com.lmntrx.surwaze_sdk.widget.TypeWriter
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:background="@color/colorQuestionBackground"
@@ -82,7 +82,7 @@
                                     android:textSize="@dimen/textSizeOptions"
                                     android:text="@string/option_a"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionABackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
 
                                 <TextView
@@ -93,7 +93,7 @@
                                     android:id="@+id/optionBTV"
                                     android:text="@string/option_b"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionBBackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
 
                                 <TextView
@@ -115,7 +115,7 @@
                                     android:textSize="@dimen/textSizeOptions"
                                     android:text="@string/option_d"
                                     android:textColor="@color/colorPrimaryDarkInterstitial"
-                                    android:background="@color/colorOptionDBackground"
+                                    android:background="@color/colorOptionCnBackground"
                                     android:layout_weight="1"/>
                         </LinearLayout>
 
