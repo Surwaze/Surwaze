@@ -23,6 +23,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -438,18 +439,20 @@ public class Interstitial extends Dialog {
             ArrayList<Option> options = question.getOptions();
             for (Option option : options){
                 switch (option.getOptionSL()){
-                    case "a":
+                    case "A":
                         optionATV.setText(option.getOption());
                         break;
-                    case "b":
+                    case "B":
                         optionBTV.setText(option.getOption());
                         break;
-                    case "c":
+                    case "C":
                         optionCTV.setText(option.getOption());
                         break;
-                    case "d":
+                    case "D":
                         optionDTV.setText(option.getOption());
                         break;
+                    default:
+                        Toast.makeText(context, "default " + option.getOptionSL(), Toast.LENGTH_SHORT).show();
                 }
             }
             canShow = questions.size() > showCount;

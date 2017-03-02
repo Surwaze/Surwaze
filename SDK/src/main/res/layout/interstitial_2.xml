@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:src="@drawable/clouds"/>
+        android:src="@drawable/clouds_corrected"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,28 +18,12 @@
         android:layout_alignParentBottom="true"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
+        android:id="@+id/optionsLayout"
         android:paddingRight="16dp"
         android:paddingLeft="16dp"
         android:orientation="vertical"
         >
 
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textSize="20sp"
-            android:paddingTop="10dp"
-            android:paddingLeft="16dp"
-            android:paddingStart="16dp"
-            android:paddingRight="16dp"
-            android:paddingEnd="16dp"
-            android:textColor="#fff"
-            android:id="@+id/questionTV"
-            android:paddingBottom="10dp"
-            android:background="@drawable/round_rectangle_background"
-            android:layout_marginBottom="10dp"
-            android:text="Are you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -90,6 +75,30 @@
             android:text="Nooooooooooooooooooo"/>
 
     </LinearLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:textSize="20sp"
+        android:paddingTop="10dp"
+        android:paddingLeft="16dp"
+        android:paddingStart="16dp"
+        android:paddingRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="6dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#fff"
+        android:id="@+id/questionTV"
+        android:paddingBottom="10dp"
+        android:background="@drawable/round_rectangle_background"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@id/optionsLayout"
+        android:text="Are you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?\nAre you loving it?"/>
+
 
 
 </RelativeLayout>
