@@ -19,4 +19,15 @@
         android:id="@+id/showInterstitialButton"
         android:text="@string/show_survey"/>
 
+
+        <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+            android:layout_below="@id/showInterstitialButton"
+        android:onClick="showSurvey2"
+            android:layout_centerHorizontal="true"
+        android:enabled="false"
+        android:id="@+id/showInterstitial2Button"
+        android:text="@string/show_survey_new"/>
+
 </RelativeLayout>
