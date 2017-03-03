@@ -242,6 +242,7 @@ public class Interstitial2 extends Dialog {
     }
 
     private void hitOption(String sl) {
+        sl = sl.toUpperCase();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -120,13 +120,13 @@ public class Interstitial extends Dialog {
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.optionATV){
-                    hitOption("a");
+                    hitOption("A");
                 }else if (id == R.id.optionBTV){
-                    hitOption("b");
+                    hitOption("B");
                 }else if (id == R.id.optionCTV){
-                    hitOption("c");
+                    hitOption("C");
                 }else if (id == R.id.optionDTV){
-                    hitOption("d");
+                    hitOption("D");
                 }
                 if (shouldVibrate){
                     Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -242,6 +242,7 @@ public class Interstitial extends Dialog {
     }
 
     private void hitOption(String sl) {
+        sl = sl.toUpperCase();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, Constants.API_BASE_URL + "hit/" + currentID + "?option=" + sl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
