@@ -46,6 +46,7 @@ public class InterstitialSurUnit extends AppCompatActivity {
             @Override
             public void onError(SurwazeException exception) {
                 Toast.makeText(InterstitialSurUnit.this, exception.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
