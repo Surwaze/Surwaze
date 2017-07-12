@@ -57,7 +57,7 @@ import java.util.TimerTask;
  * Created by livin on 25/2/17.
  */
 
-public class Interstitial extends Dialog {
+public class Interstitial2 extends Dialog {
 
     private Context context;
 
@@ -70,18 +70,18 @@ public class Interstitial extends Dialog {
     private boolean answered = false;
 
     private TextView optionATV,
-        optionBTV,
-        optionCTV,
-        optionDTV;
+            optionBTV,
+            optionCTV,
+            optionDTV;
 
     private TextView questionTV;
-
+/*
     private View optionsParentLayout;
 
     private ImageView circleLoader;
     private ImageView handGesture;
 
-    private OptionPicker optionPicker;
+    private OptionPicker optionPicker;*/
 
     private String currentID;
 
@@ -89,44 +89,44 @@ public class Interstitial extends Dialog {
 
     public interface Callback{
         void onError(SurwazeException exception);
-        void onLoadComplete(Interstitial interstitial);
+        void onLoadComplete(Interstitial2 interstitial);
         void onSkipped();
         void onAnswered();
     }
 
 
     private Callback callbacks;
-
+/*
     private Timer helper;
-    private Animation helperAnimation;
+    private Animation helperAnimation;*/
 
-    public Interstitial(final Context context) {
+    public Interstitial2(final Context context) {
         super(context, android.R.style.Theme);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.interstitial);
+        setContentView(R.layout.interstitial_2);
         this.context = context;
         questionTV = (TextView) findViewById(R.id.questionTV);
         optionATV = (TextView) findViewById(R.id.optionATV);
         optionBTV = (TextView) findViewById(R.id.optionBTV);
         optionCTV = (TextView) findViewById(R.id.optionCTV);
         optionDTV = (TextView) findViewById(R.id.optionDTV);
-        circleLoader = (ImageView) findViewById(R.id.circleLoader);
-        handGesture = (ImageView) findViewById(R.id.handGesture);
-        optionsParentLayout = findViewById(R.id.optionsParentLayout);
-        optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
-        ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
+        //circleLoader = (ImageView) findViewById(R.id.circleLoader);
+        //handGesture = (ImageView) findViewById(R.id.handGesture);
+        //optionsParentLayout = findViewById(R.id.optionsParentLayout);
+        //optionPicker = (OptionPicker) findViewById(R.id.optionPicker);
+        //ImageView skipButton = (ImageView) findViewById(R.id.skipButton);
         View.OnClickListener optionClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int id = v.getId();
                 if (id == R.id.optionATV){
-                    hitOption("A");
+                    hitOption("a");
                 }else if (id == R.id.optionBTV){
-                    hitOption("B");
+                    hitOption("b");
                 }else if (id == R.id.optionCTV){
-                    hitOption("C");
+                    hitOption("c");
                 }else if (id == R.id.optionDTV){
-                    hitOption("D");
+                    hitOption("d");
                 }
                 if (shouldVibrate){
                     Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -142,22 +142,22 @@ public class Interstitial extends Dialog {
         optionCTV.setOnClickListener(optionClickListener);
         optionDTV.setOnClickListener(optionClickListener);
         FontManager.setFontToChildrenOfContainer(this.context,(ViewGroup) findViewById(R.id.interstitial_root));
-        setOnDismissListener(new OnDismissListener() {
+        /*setOnDismissListener(new OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
                 Interstitial.this.context.unregisterReceiver(revealOptionBR);
                 Interstitial.this.context.unregisterReceiver(showHelpBR);
             }
-        });
+        });*/
         setOnCancelListener(new OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Interstitial.this.context.unregisterReceiver(revealOptionBR);
-                Interstitial.this.context.unregisterReceiver(showHelpBR);
-                Interstitial.this.context.unregisterReceiver(answeredSurveyBR);
-                Interstitial.this.context.unregisterReceiver(errorReceivedBR);
+                //Interstitial.this.context.unregisterReceiver(revealOptionBR);
+                //Interstitial.this.context.unregisterReceiver(showHelpBR);
+                Interstitial2.this.context.unregisterReceiver(answeredSurveyBR);
+                Interstitial2.this.context.unregisterReceiver(errorReceivedBR);
             }
-        });
+        });/*
         optionPicker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -237,7 +237,7 @@ public class Interstitial extends Dialog {
                 }
                 dismiss();
             }
-        });
+        });*/
         setCancelable(false);
     }
 
@@ -256,12 +256,12 @@ public class Interstitial extends Dialog {
             @Override
             protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
                 if (response.statusCode == 200){
-                    Interstitial.this.context.sendBroadcast(new Intent(
-                            Interstitial.this.context.getPackageName() + ".ANSWERED"
+                    Interstitial2.this.context.sendBroadcast(new Intent(
+                            Interstitial2.this.context.getPackageName() + ".ANSWERED"
                     ));
                 }else {
-                    Interstitial.this.context.sendBroadcast(new Intent(
-                            Interstitial.this.context.getPackageName() + ".ERROR"
+                    Interstitial2.this.context.sendBroadcast(new Intent(
+                            Interstitial2.this.context.getPackageName() + ".ERROR"
                     ));
                 }
                 return super.parseNetworkResponse(response);
@@ -270,7 +270,7 @@ public class Interstitial extends Dialog {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("x-access-token",Interstitial.this.context.getString(R.string.token));
+                headers.put("x-access-token",Interstitial2.this.context.getString(R.string.token));
                 return headers;
             }
         };
@@ -278,19 +278,19 @@ public class Interstitial extends Dialog {
                 Constants.VOLLEY_REQUEST_TIMEOUT,
                 Constants.VOLLEY_REQUEST_RETRIES,
                 Constants.VOLLEY_REQUEST_BACKOFF_MULTIPLIER));
-        Surwaze.getInstance(Interstitial.this.context).addToRequestQueue(request);
+        Surwaze.getInstance(Interstitial2.this.context).addToRequestQueue(request);
     }
 
-    private void startCircleLoaderBlink() {
+    /*private void startCircleLoaderBlink() {
         final Animation blink = new AlphaAnimation(1, 0);
         blink.setDuration(Constants.CIRCULAR_BLINK_ANIMATION_DURATION);
         blink.setInterpolator(new LinearInterpolator());
         blink.setRepeatCount(Animation.INFINITE);
         blink.setRepeatMode(Animation.REVERSE);
         circleLoader.startAnimation(blink);
-    }
+    }*/
 
-    private BroadcastReceiver revealOptionBR = new BroadcastReceiver() {
+    /*private BroadcastReceiver revealOptionBR = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -308,9 +308,9 @@ public class Interstitial extends Dialog {
             }
             optionPicker.toggleSelectionLock();
         }
-    };
+    };*/
 
-    private BroadcastReceiver showHelpBR = new BroadcastReceiver() {
+    /*private BroadcastReceiver showHelpBR = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             helperAnimation = new TranslateAnimation(0,0,-200,200);
@@ -322,7 +322,7 @@ public class Interstitial extends Dialog {
             handGesture.setImageDrawable(ContextCompat.getDrawable(context,R.drawable.hand_gesture));
             handGesture.setAnimation(helperAnimation);
         }
-    };
+    };*/
 
     private BroadcastReceiver answeredSurveyBR = new BroadcastReceiver() {
         @Override
@@ -338,7 +338,7 @@ public class Interstitial extends Dialog {
         }
     };
 
-    public Interstitial setCallbacks(Callback callbacks){
+    public Interstitial2 setCallbacks(Callback callbacks){
         this.callbacks = callbacks;
         return this;
     }
@@ -367,7 +367,7 @@ public class Interstitial extends Dialog {
                             return;
                         }
                     }
-                    callbacks.onLoadComplete(Interstitial.this);
+                    callbacks.onLoadComplete(Interstitial2.this);
                 }
             }
         }, new Response.ErrorListener() {
@@ -401,18 +401,18 @@ public class Interstitial extends Dialog {
     @Override
     public void show(){
         super.show();
-        optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
+        /*optionATV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         optionBTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         optionCTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
         optionDTV.setBackgroundColor(ContextCompat.getColor(context,R.color.colorOptionCnBackground));
 
         context.registerReceiver(revealOptionBR,new IntentFilter(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
         context.registerReceiver(showHelpBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".SHOW_HELP"));
-        context.registerReceiver(answeredSurveyBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".ANSWERED"));
-        context.registerReceiver(errorReceivedBR, new IntentFilter(Interstitial.this.context.getPackageName() + ".ERROR"));
+        */context.registerReceiver(answeredSurveyBR, new IntentFilter(Interstitial2.this.context.getPackageName() + ".ANSWERED"));
+        context.registerReceiver(errorReceivedBR, new IntentFilter(Interstitial2.this.context.getPackageName() + ".ERROR"));
 
         answered = false;
-        handGesture.setVisibility(View.INVISIBLE);
+        /*handGesture.setVisibility(View.INVISIBLE);
         startCircleLoaderBlink();
         optionPicker.toggleSelectionLock();
         optionPicker.setProgress(90);
@@ -431,7 +431,7 @@ public class Interstitial extends Dialog {
             public void run() {
                 Interstitial.this.context.sendBroadcast(new Intent(Interstitial.this.context.getPackageName() + ".REVEAL_OPTIONS"));
             }
-        },Constants.REVEAL_OPTIONS_TIMER_DURATION);
+        },Constants.REVEAL_OPTIONS_TIMER_DURATION);*/
         try {
             Question question = questions.get(questions.size()-++showCount);
             Log.d("Question",question.getQuestion());
@@ -452,8 +452,6 @@ public class Interstitial extends Dialog {
                     case "D":
                         optionDTV.setText(option.getOption());
                         break;
-                    default:
-                        Toast.makeText(context, "default " + option.getOptionSL(), Toast.LENGTH_SHORT).show();
                 }
             }
             canShow = questions.size() > showCount;
